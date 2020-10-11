@@ -1,2 +1,70 @@
 # 3D-Bore-Profiler
 3D-Bore-Profiler for scanning boreholes and processing the data into a usable format
+
+
+README.txt
+
+There should be 5 items in this folder,’BoreDataExport2CSV.m’, ‘DataProcessingBoreProfile.m’, ‘Processed Bore Profiles (cooked)’ folder, ‘Unprocessed Bore Profiles (raw)’ and ‘DataProcessingBoreProfile output’
+
+
+———————————————
+BoreDataExport2CSV.m:
+This is a Matlab program to reformat the raw profile data into useable data where the deviations along every 3 degrees can be seen. 
+
+This program requires the raw csv file be imported into Matlab already.  
+
+To start, the program asks the user for the name of the .csv file. This is so the program can deal with the right file if multiple csv files are present. 
+Next, the program asks the user what they want to name the export file. 
+After this, the program goes through and starts formatting different columns so they can be unstacked and reorganized. 
+The standoff, quality, angle,  distance variables all have a column and are assigned as the names here. 
+The quality column is then dropped and the values rounded through the rest of the table. 
+Next, the outliers in the table are removed if they are greater than 1.5 quartiles of the mean of the data.
+The data is then unstacked and the distance column reorganized into their respective angles, and sorted increasing down the table by standoff.
+All the radii gets placed in a new array for combining every 3 terms
+Next, a series of for-loops are used to iterate through every row and column of the data, taking the mean of every 3 values and putting them in a new column in a new array. 
+The data is then converted back to a table and combined with the sorted data. 
+Because of the way the Lidar is driven, a data point is not guaranteed for every angle, so any missing values are then filled in. 
+After this, all the data is written to a .csv file. 
+
+The data is exported looking like this:
+
+Standoff	0	3	6	9
+D1		r1	r2	r3	r4	
+D2		r1	r2	r3	r4	
+D3		r1	r2	r3	r4	
+D4		r1	r2	r3	r4	
+——————————————————————————
+
+
+DataProcessingBoreProfile.m:
+This is also a Matlab program with the intent to create a visual of the data. Primarily, this program converts Polar coordinates into Cartesian and graphs the result. Rendering in Matlab presents a problem with the data, resulting in weird jagged spikes. This is a result of Matlab drawing lines between some of the closest points and not in the correct order. 
+This program outputs 4 different 3D visuals so the user can gain an understanding of this bore.
+ 
+This program requires the raw csv file be imported into Matlab already.  
+
+To start, the program asks the user for the name of the .csv file. This is so the program can deal with the right file if multiple csv files are present. 
+Next, the program asks the user for the number of filters they want to run.  The purpose of this is to drop every other point which increases speed and makes the bore look smoother. Each filter eliminates half of the data. This allows the user the option of running this X number of times, which will divide the number of data points by 2^X.  Four divisions was found to be a good starting place. 
+Next, a new column is calculated that holds the radian equivalent of the angle coming from raw. 
+The columns are renamed for ease of understanding
+X and Y columns are made through calculations of the distance multiple by the sin and cos of the angle in radians. The results are converted to an array for easy processing. 
+Next, a scatter plot is made of the data using the 3 axis Cartesian coordinates. 
+A square grid is made and the points mapped out on it. 
+A surface plot, contour plot, and mesh plot are all made from this data
+They will all pop up on screen. 
+
+An example picture of this is located at ../BoreProfiling/DataProcessingBoreProfile_output
+——————————————————————
+Processed Bore Profiles (cooked)’ folder
+
+This folder contains all the processed data from BoreDataExport2CSV.m
+
+
+——————————————————————
+Unprocessed Bore Profiles (raw)’ folder
+
+
+This folder contains all the raw data that is used for both Matlab scripts. 
+
+
+
+
